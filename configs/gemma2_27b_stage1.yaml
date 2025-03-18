@@ -1,0 +1,73 @@
+debug: False
+use_wandb: True
+upload_to_hf_hub: True
+sample_data: False
+seed: -1
+
+output_dir: ./artifacts
+data_dir: ./data
+
+
+wandb_project_name: WSDM-Cup-Multilingual-Chatbot-Arena
+experiment_name: gemma2_27b_rm_stage_1
+notes: gemma 2 27b reward model stage 1 training
+train_file_name: train_combined_stage_1.parquet
+
+model:
+  model_name: Skywork/Skywork-Reward-Gemma-2-27B-v0.2
+  attn_implementation: flash_attention_2
+  dtype: bfloat16
+  quantize_to_4bit: true
+  disable_attn_logit_softcapping: False
+  
+
+tokenizer:
+  max_length: 1536
+  truncation: True
+  padding_side: left
+  truncation_side: left
+  pad_to_multiple_of: 16
+
+lora:
+  r: 64
+  alpha: 64
+  target_modules: all-linear
+  dropout: 0
+  bias: none
+  modules_to_save: ['score']
+
+optimizer:
+  name: AdamW8bit
+  head_lr: 2.0e-5
+  lr: 1.0e-4
+
+trainer_args:
+  eval_strategy: epoch
+  save_strategy: "no"
+  logging_strategy: steps
+  logging_first_step: True
+  logging_steps: 1
+  eval_on_start: false
+  per_device_train_batch_size: 16
+  per_device_eval_batch_size: 16
+  gradient_accumulation_steps: 1
+  learning_rate: ${optimizer.lr}
+  num_train_epochs: 1
+  lr_scheduler_type: "cosine"
+  warmup_ratio: 0.02
+  bf16: true
+  tf32: true
+  bf16_full_eval: true
+  group_by_length: true
+  gradient_checkpointing: true
+  gradient_checkpointing_kwargs:
+    use_reentrant: false
+  torch_compile: true
+  use_liger_kernel: false
+  report_to: "wandb"
+  weight_decay: 0.01
+  max_grad_norm: null
+  ddp_find_unused_parameters: false
+
+
+  

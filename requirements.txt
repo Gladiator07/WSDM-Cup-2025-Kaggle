@@ -1,0 +1,19 @@
+# xformers
+torch
+bitsandbytes
+transformers
+datasets
+scikit-learn
+nvitop
+kagglehub
+peft
+huggingface_hub
+hf_transfer
+sentencepiece
+discordwebhook
+python-dotenv
+wandb
+omegaconf
+simple-parsing
+vllm
+trl

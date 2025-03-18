@@ -1,0 +1,2 @@
+accelerate launch --multi_gpu --num_processes=4 --mixed_precision bf16 --dynamo_backend inductor src/train_stage_2_kd.py configs/gemma2_9B_stage2_v8.yaml sample_data=True
+accelerate launch --num_processes=1 --mixed_precision bf16 --dynamo_backend inductor src/train_stage_2_kd.py configs/gemma2_9B_stage2_v8.yaml sample_data=True

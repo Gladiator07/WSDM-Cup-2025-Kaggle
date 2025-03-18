@@ -1,0 +1,76 @@
+debug: False
+use_wandb: True
+upload_to_hf_hub: True
+sample_data: False
+seed: -1
+
+output_dir: ./artifacts
+data_dir: ./data
+
+
+wandb_project_name: WSDM-Cup-Multilingual-Chatbot-Arena
+experiment_name: qwen2.5_3B_qlora_unsloth_restart
+notes: qwen lora baseline with unsloth made to work with classification
+
+
+train_file_name: train_split.parquet
+
+
+model_name: unsloth/Qwen2.5-3B
+load_in_4bit: false
+dtype: bfloat16
+use_gradient_checkpointing: "unsloth"
+
+tokenizer:
+  max_length: 1024
+  truncation: true
+  padding_side: left
+  truncation_side: left
+  pad_to_multiple_of: 16
+
+lora:
+  r: 16
+  alpha: 16
+  target_modules:
+    - q_proj
+    - k_proj
+    - v_proj
+    - o_proj
+    - gate_proj
+    - up_proj
+    - down_proj
+  dropout: 0
+  bias: none
+  modules_to_save: ['lm_head']
+  use_rslora: false
+  
+
+
+trainer_args:
+  eval_strategy: epoch
+  save_strategy: "no"
+  logging_strategy: steps
+  logging_first_step: true
+  logging_steps: 1
+  eval_on_start: false
+  per_device_train_batch_size: 32
+  per_device_eval_batch_size: 32
+  gradient_accumulation_steps: 1
+  learning_rate: 1.0e-4
+  num_train_epochs: 1
+  lr_scheduler_type: "cosine"
+  # warmup_ratio: 0.02
+  warmup_steps: 10
+  bf16: true
+  tf32: true
+  bf16_full_eval: true
+  optim: "adamw_8bit"
+  group_by_length: true
+  gradient_checkpointing: false
+  torch_compile: false
+  use_liger_kernel: false
+  report_to: "wandb"
+  weight_decay: 0.01
+  max_grad_norm: 1.0
+
+  
